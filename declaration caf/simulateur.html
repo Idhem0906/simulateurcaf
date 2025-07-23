@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulateur de déclaration trimestrielle CAF</title>
+  <style>
+    :root {
+      --bleu: #005aac;
+      --fond: #f2f2f2;
+      --text: #2d3e50;
+      --bloc: #fff;
+    }
+
+    body {
+      font-family: "Segoe UI", Roboto, sans-serif;
+      background-color: var(--fond);
+      margin: 0;
+      padding: 0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fond: #121212;
+        --text: #f0f0f0;
+        --bloc: #1e1e1e;
+      }
+    }
+
+    header {
+      background-color: var(--bleu);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    main {
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+      color: var(--text);
+    }
+
+    .intro {
+      background-color: #e5f0ff;
+      border-left: 5px solid var(--bleu);
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+
+    form {
+      background: var(--bloc);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input[type="number"], select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .buttons {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    button {
+      background-color: var(--bleu);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #003f7d;
+    }
+
+    #resultat {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    #conseil {
+      margin-top: 10px;
+      text-align: center;
+      font-style: italic;
+      color: gray;
+    }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 0.9em;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Déclaration Trimestrielle - Simulateur CAF</h1>
+  </header>
+
+  <main>
+    <div class="intro">
+      <p><strong>Bienvenue.</strong> Ce simulateur vous aide à estimer vos ressources à déclarer à la CAF pour un trimestre donné. Ce n’est pas une déclaration officielle, mais un outil pédagogique créé par Mehdi.</p>
+    </div>
+
+    <form id="simulateur">
+      <label for="trimestre">🗓️ Trimestre concerné</label>
+      <select id="trimestre">
+        <option>Janvier - Février - Mars</option>
+        <option>Avril - Mai - Juin</option>
+        <option>Juillet - Août - Septembre</option>
+        <option>Octobre - Novembre - Décembre</option>
+      </select>
+
+      <label for="salaires">💼 Salaires nets imposables</label>
+      <input type="number" id="salaires" placeholder="Ex : 1200">
+
+      <label for="poleemploi">🎓 Allocations versées par Pôle Emploi</label>
+      <input type="number" id="poleemploi" placeholder="Ex : 500">
+
+      <label for="indemnites">🩺 Indemnités journalières (maladie, maternité...)</label>
+      <input type="number" id="indemnites" placeholder="Ex : 350">
+
+      <label for="pensions">🏦 Pensions alimentaires perçues</label>
+      <input type="number" id="pensions" placeholder="Ex : 300">
+
+      <label for="autres">⚖️ Autres ressources (locations, placements...)</label>
+      <input type="number" id="autres" placeholder="Ex : 200">
+
+      <div class="buttons">
+        <button type="button" onclick="calculer()">Calculer</button>
+        <button type="button" onclick="resetForm()">Réinitialiser</button>
+        <button type="button" onclick="window.print()">🖨️ Imprimer</button>
+      </div>
+    </form>
+
+    <div id="resultat"></div>
+    <div id="conseil"></div>
+
+    <footer>
+      ⚠️ Ce simulateur est fourni à titre indicatif.<br>
+      © 2025 — Créé par Mehdi
+    </footer>
+  </main>
+
+  <script>
+    function calculer() {
+      const salaires = parseFloat(document.getElementById('salaires').value) || 0;
+      const poleemploi = parseFloat(document.getElementById('poleemploi').value) || 0;
+      const indemnites = parseFloat(document.getElementById('indemnites').value) || 0;
+      const pensions = parseFloat(document.getElementById('pensions').value) || 0;
+      const autres = parseFloat(document.getElementById('autres').value) || 0;
+
+      const total = salaires + poleemploi + indemnites + pensions + autres;
+      document.getElementById('resultat').textContent =
+        `✅ Montant total estimé à déclarer : ${total.toFixed(2)} €`;
+
+      const conseil = document.getElementById('conseil');
+      if (total < 1000) {
+        conseil.textContent = "💡 Vous pourriez être éligible à un complément d'aide.";
+      } else if (total < 2500) {
+        conseil.textContent = "📎 Pensez à vérifier vos droits selon votre situation familiale.";
+      } else {
+        conseil.textContent = "🔍 Montant élevé, assurez-vous de bien vérifier chaque ressource déclarée.";
+      }
+    }
+
+    function resetForm() {
+      ['salaires','poleemploi','indemnites','pensions','autres'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('resultat').textContent = '';
+      document.getElementById('conseil').textContent = '';
+    }
+  </script>
+
+</body>
+</html>
